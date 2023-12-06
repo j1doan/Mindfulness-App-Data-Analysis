@@ -1,0 +1,438 @@
+---
+title: "Mindfulness Data Investigation"
+author: "James Doan"
+date: "December 4, 2022"
+output: html_document
+---
+# Mindfulness EDI Results
+
+```{r}
+# Location of file relative to my machine
+load("D:/PSYC_193L_R/Final/mindfulness.RData")
+suppressPackageStartupMessages(library("here"))
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("ggplot2"))
+```
+
+```{r}
+# Locate filepath on any machine
+here("mindfulness.RData")
+```
+
+```{r}
+# Count the number of app users in the study
+mindfulness_study %>% 
+  rename("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  pull(Group) %>% 
+  table() # 29 app users and 33 waitlisted users
+
+# Count the number participants as categorized by sex
+mindfulness_study %>% 
+  rename("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  pull(Sex) %>% 
+  table() # 25 males and 37 females in this study
+
+# Descriptive stats for age
+mean(mindfulness_study$Age, na.rm=TRUE)
+sd(mindfulness_study$Age, na.rm=TRUE)
+range(mindfulness_study$Age, na.rm=TRUE)
+```
+
+```{r}
+# Investigation of app users that are male
+male_app <- mindfulness_study %>% 
+  rename ("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  rename ("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  filter(Group == "A" & Sex == "1")
+
+###########################################################################################################
+
+# SWLS Investigation
+
+# How many improved after 10 days?
+male_app %>% 
+  mutate(SWLSBaselineVs10 = (`SWLS baseline` < `SWLS day 10`), .after = "SWLS day 10") %>%  # SWLS improve after 10 days?
+  pull(SWLSBaselineVs10) %>% 
+  table() # 7/16 male app users improved after 10 day intervention
+
+# how many improved after 30 days?
+male_app %>% 
+  mutate(SWLSBaselineVs30 = (`SWLS baseline` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve after 30 days?
+  pull(SWLSBaselineVs30) %>% 
+  table() # 10/16 male app users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWLS scores?
+male_app %>% 
+  mutate(SWLS10Vs30 = (`SWLS day 10` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve trend continue??
+  pull(SWLS10Vs30) %>% 
+  table() # 7/16 male app users improved from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# PSS Investigation
+
+# How many reported increased stress after 10 days?
+male_app %>% 
+  mutate(PSSBaselineVs10 = (`PSS baseline` < `PSS day 10`), .after = "PSS day 10") %>%  # PSS improve after 10 days?
+  pull(PSSBaselineVs10) %>% 
+  table() # 3/16 male app users reported increased stress after 10 day intervention
+
+# how many reported increased stress after 30 days?
+male_app %>% 
+  mutate(PSSBaselineVs30 = (`PSS baseline` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve after 30 days?
+  pull(PSSBaselineVs30) %>% 
+  table() # 6/16 male app users reported increased stress after 30 day intervention
+
+# Did subjects report increased stress from the 10- to 30- day intervention?
+male_app %>% 
+  mutate(PSS10Vs30 = (`PSS day 10` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve trend continue?
+  pull(PSS10Vs30) %>% 
+  table() # 4/16 male app users reported increased stress from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# RWS Investigation
+
+# How many improved after 10 days?
+male_app %>% 
+  mutate(RWSBaselineVs10 = (`RWS baseline` < `RWS day 10`), .after = "RWS day 10") %>%  # RWS improve after 10 days?
+  pull(RWSBaselineVs10) %>% 
+  table() # 10/16 male app users improved after 10 day intervention
+
+# how many improved after 30 days?
+male_app %>% 
+  mutate(RWSBaselineVs30 = (`RWS baseline` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve after 30 days?
+  pull(RWSBaselineVs30) %>% 
+  table() # 11/16 male app users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWS scores?
+male_app %>% 
+  mutate(RWS10Vs30 = (`RWS day 10` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve trend continue?
+  pull(RWS10Vs30) %>% 
+  table() # 9/16 male app users improved from 10-day to 30-day intervention period
+```
+
+```{r}
+# Investigation of app users that are female
+female_app <- mindfulness_study %>% 
+  rename("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  rename("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  filter(Group == "A" & Sex == "2")
+
+###########################################################################################################
+
+# SWLS Investigation
+
+# How many improved after 10 days?
+female_app %>% 
+  mutate(SWLSBaselineVs10 = (`SWLS baseline` < `SWLS day 10`), .after = "SWLS day 10") %>%  # SWLS improve after 10 days?
+  pull(SWLSBaselineVs10) %>% 
+  table() # 8/13 female app users improved after 10 day intervention
+
+# how many improved after 30 days?
+female_app %>% 
+  mutate(SWLSBaselineVs30 = (`SWLS baseline` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve after 30 days?
+  pull(SWLSBaselineVs30) %>% 
+  table() # 10/13 female app users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWLS scores?
+female_app %>% 
+  mutate(SWLS10Vs30 = (`SWLS day 10` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve trend continue??
+  pull(SWLS10Vs30) %>% 
+  table() # 10/13 female app users improved from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# PSS Investigation
+
+# How many reported increased stress after 10 days?
+female_app %>% 
+  mutate(PSSBaselineVs10 = (`PSS baseline` < `PSS day 10`), .after = "PSS day 10") %>%  # PSS improve after 10 days?
+  pull(PSSBaselineVs10) %>% 
+  table() # 1/13 female app users reported increased stress after 10 day intervention
+
+# how many reported increased stress after 30 days?
+female_app %>% 
+  mutate(PSSBaselineVs30 = (`PSS baseline` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve after 30 days?
+  pull(PSSBaselineVs30) %>% 
+  table() # 0/13 female app users reported increased stress after 30 day intervention
+
+# Did subjects report increased stress from the 10- to 30- day intervention?
+female_app %>% 
+  mutate(PSS10Vs30 = (`PSS day 10` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve trend continue?
+  pull(PSS10Vs30) %>% 
+  table() # 1/13 female app users reported increased stress from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# RWS Investigation
+
+# How many improved after 10 days?
+female_app %>% 
+  mutate(RWSBaselineVs10 = (`RWS baseline` < `RWS day 10`), .after = "RWS day 10") %>%  # RWS improve after 10 days?
+  pull(RWSBaselineVs10) %>% 
+  table() # 7/13 female app users improved after 10 day intervention
+
+# how many improved after 30 days?
+female_app %>% 
+  mutate(RWSBaselineVs30 = (`RWS baseline` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve after 30 days?
+  pull(RWSBaselineVs30) %>% 
+  table() # 10/13 female app users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWS scores?
+female_app %>% 
+  mutate(RWS10Vs30 = (`RWS day 10` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve trend continue?
+  pull(RWS10Vs30) %>% 
+  table() # 11/13 female app users improved from 10-day to 30-day intervention period
+```
+
+```{r}
+# Investigation of waitlisted users that are male
+male_waitlist <- mindfulness_study %>% 
+  rename("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  rename("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  filter(Group == "B" & Sex == "1")
+
+###########################################################################################################
+
+# SWLS Investigation
+
+# How many improved after 10 days?
+male_waitlist %>% 
+  mutate(SWLSBaselineVs10 = (`SWLS baseline` < `SWLS day 10`), .after = "SWLS day 10") %>%  # SWLS improve after 10 days?
+  pull(SWLSBaselineVs10) %>% 
+  table() # 3/9 male waitlisted users improved after 10 day intervention
+
+# how many improved after 30 days?
+male_waitlist %>% 
+  mutate(SWLSBaselineVs30 = (`SWLS baseline` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve after 30 days?
+  pull(SWLSBaselineVs30) %>% 
+  table() # 2/9 male waitlisted users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWLS scores?
+male_waitlist %>% 
+  mutate(SWLS10Vs30 = (`SWLS day 10` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve trend continue??
+  pull(SWLS10Vs30) %>% 
+  table() # 5/9 male waitlisted users improved from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# PSS Investigation
+
+# How many reported increased stress after 10 days?
+male_waitlist %>% 
+  mutate(PSSBaselineVs10 = (`PSS baseline` < `PSS day 10`), .after = "PSS day 10") %>%  # PSS improve after 10 days?
+  pull(PSSBaselineVs10) %>% 
+  table() # 2/9 male waitlisted users reported increased stress after 10 day intervention
+
+# How many reported increased stress after 30 days?
+male_waitlist %>% 
+  mutate(PSSBaselineVs30 = (`PSS baseline` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve after 30 days?
+  pull(PSSBaselineVs30) %>% 
+  table() # 5/9 male waitlisted users reported increased stress after 30 day intervention
+
+# Did subjects report increased stress from the 10- to 30- day intervention?
+male_waitlist %>% 
+  mutate(PSS10Vs30 = (`PSS day 10` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve trend continue?
+  pull(PSS10Vs30) %>% 
+  table() # 7/9 male waitlisted users reported increased stress from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# RWS Investigation
+
+# How many improved after 10 days?
+male_waitlist %>% 
+  mutate(RWSBaselineVs10 = (`RWS baseline` < `RWS day 10`), .after = "RWS day 10") %>%  # RWS improve after 10 days?
+  pull(RWSBaselineVs10) %>% 
+  table() # 4/9 male waitlisted users improved after 10 day intervention
+
+# How many improved after 30 days?
+male_waitlist %>% 
+  mutate(RWSBaselineVs30 = (`RWS baseline` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve after 30 days?
+  pull(RWSBaselineVs30) %>% 
+  table() # 4/9 male waitlisted users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWS scores?
+male_waitlist %>% 
+  mutate(RWS10Vs30 = (`RWS day 10` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve trend continue?
+  pull(RWS10Vs30) %>% 
+  table() # 4/9 male app waitlisted improved from 10-day to 30-day intervention period
+```
+
+```{r}
+# Investigation of waitlisted users that are female
+female_waitlist <- mindfulness_study %>% 
+  rename("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  rename("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  filter(Group == "B" & Sex == "2")
+
+###########################################################################################################
+
+# SWLS Investigation
+
+# How many improved after 10 days?
+female_waitlist %>% 
+  mutate(SWLSBaselineVs10 = (`SWLS baseline` < `SWLS day 10`), .after = "SWLS day 10") %>%  # SWLS improve after 10 days?
+  pull(SWLSBaselineVs10) %>% 
+  table() # 13/24 female waitlisted users improved after 10 day intervention
+
+# how many improved after 30 days?
+female_waitlist %>% 
+  mutate(SWLSBaselineVs30 = (`SWLS baseline` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve after 30 days?
+  pull(SWLSBaselineVs30) %>% 
+  table() # 11/24 female waitlisted users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWLS scores?
+female_waitlist %>% 
+  mutate(SWLS10Vs30 = (`SWLS day 10` < `SWLS day 30`), .after = "SWLS day 30") %>%  # SWLS improve trend continue??
+  pull(SWLS10Vs30) %>% 
+  table() # 11/24 female waitlisted users improved from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# PSS Investigation
+
+# How many reported increased stress after 10 days?
+female_waitlist %>% 
+  mutate(PSSBaselineVs10 = (`PSS baseline` < `PSS day 10`), .after = "PSS day 10") %>%  # PSS improve after 10 days?
+  pull(PSSBaselineVs10) %>% 
+  table() # 9/24 female waitlisted users reported increased stress after 10 day intervention
+
+# How many reported increased stress after 30 days?
+female_waitlist %>% 
+  mutate(PSSBaselineVs30 = (`PSS baseline` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve after 30 days?
+  pull(PSSBaselineVs30) %>% 
+  table() # 15/24 female waitlisted users reported increased stress after 30 day intervention
+
+# Did subjects report increased stress from the 10- to 30- day intervention?
+female_waitlist %>% 
+  mutate(PSS10Vs30 = (`PSS day 10` < `PSS day 30`), .after = "PSS day 30") %>%  # PSS improve trend continue?
+  pull(PSS10Vs30) %>% 
+  table() # 17/24 female waitlisted users reported increased stress from 10-day to 30-day intervention period
+
+###########################################################################################################
+
+# RWS Investigation
+
+# How many improved after 10 days?
+female_waitlist %>% 
+  mutate(RWSBaselineVs10 = (`RWS baseline` < `RWS day 10`), .after = "RWS day 10") %>%  # RWS improve after 10 days?
+  pull(RWSBaselineVs10) %>% 
+  table() # 16/24 female waitlisted users improved after 10 day intervention
+
+# How many improved after 30 days?
+female_waitlist %>% 
+  mutate(RWSBaselineVs30 = (`RWS baseline` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve after 30 days?
+  pull(RWSBaselineVs30) %>% 
+  table() # 13/24 female waitlisted users improved after 30 day intervention
+
+# Did subjects stay on an upward trend from the 10- to 30- day intervention or did they decrease RWS scores?
+female_waitlist %>% 
+  mutate(RWS10Vs30 = (`RWS day 10` < `RWS day 30`), .after = "RWS day 30") %>%  # RWS improve trend continue?
+  pull(RWS10Vs30) %>% 
+  table() # 9/24 female app waitlisted improved from 10-day to 30-day intervention period
+```
+
+```{r}
+# Participant Age and GHQ Score Analysis
+mindfulness_study %>% 
+  rename ("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  rename ("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  # Begin ggplot
+  ggplot(aes(y = GHQ, x = Age)) +
+  geom_point() + 
+  facet_grid(cols = vars(Group),
+             rows = vars(Sex)) +
+  labs(title = "Participant Age and GHQ Score Analysis",
+       subtitle = "What does a participant's age and GHQ score reflect their overall well being?",
+       y = "GHQ Total Score",
+       x = "Subject Age",
+       tag = "Figure 1",
+       caption = "Note: A = Male Subjects, B = Female Subjects, 1 = App Users, 2 = Waitlisted Users") +
+  theme(plot.title = element_text(size = 18,
+                                  hjust = 0.5,
+                                  face = "bold"),
+        plot.subtitle = element_text(size = 14,
+                                  hjust = 0.5,
+                                  face = "italic"),
+        plot.tag = element_text(face = "bold")) +
+  theme(legend.box.background = element_rect(color = "black",
+                                             size = 1),
+        legend.title = element_text(face = "bold"),
+        legend.text = element_text(face = "bold"),
+        legend.title.align = 0.5)
+
+# Stats for male app users
+mean(male_app$GHQ)
+sd(male_app$GHQ)
+range(male_app$GHQ)
+mean(male_app$Age)
+sd(male_app$Age)
+range(male_app$Age)
+
+# Stats for female app users
+mean(female_app$GHQ)
+sd(female_app$GHQ)
+range(female_app$GHQ)
+mean(female_app$Age)
+sd(female_app$Age)
+range(female_app$Age)
+
+# Stats for male waitlisted users
+mean(male_waitlist$GHQ)
+sd(male_waitlist$GHQ)
+range(male_waitlist$GHQ)
+mean(male_waitlist$Age)
+sd(male_waitlist$Age)
+range(male_waitlist$Age)
+
+# Stats for female waitlisted users
+mean(female_waitlist$GHQ)
+sd(female_waitlist$GHQ)
+range(female_waitlist$GHQ)
+mean(female_waitlist$Age)
+sd(female_waitlist$Age)
+range(female_waitlist$Age)
+```
+
+```{r}
+mindfulness_study %>% 
+  rename ("Group" = "Group (A = app, B = waitlist)") %>%  # Remane `Group` column for easier management
+  rename ("Sex" = "Sex (1 = male, 2 = female)") %>% # Remane `Sex` column for easier management
+  # Begin ggplot
+  ggplot(aes(x = GHQ)) +
+  geom_bar(fill = "lightblue", colour = "black") +
+  coord_cartesian(ylim = c(0, 15)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 15, by = 3), # Mod y-axis
+                     labels = seq(from = 0, to = 15, by = 3),
+                     expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(from = 0, to = 10, by = 1), # Mod x-axis
+                     labels = seq(from = 0, to = 10, by = 1),
+                     expand = c(0, 0)) +
+  labs(title = "GHQ Subject Score Count",
+       subtitle = "How many subjects have a certain GHQ score?",
+       y = "# of Subjects",
+       x = "GHQ Score",
+       tag = "Figure 2",
+       caption = "Note: Score counts include both male and female subjects, regardless of whether they used the app or were waitlisted.") +
+  theme(plot.title = element_text(size = 18,
+                                  hjust = 0.5,
+                                  face = "bold"),
+        plot.subtitle = element_text(size = 14,
+                                  hjust = 0.5,
+                                  face = "italic"),
+        plot.tag = element_text(face = "bold")) +
+  theme(legend.box.background = element_rect(color = "black",
+                                             size = 1),
+        legend.title = element_text(face = "bold"),
+        legend.text = element_text(face = "bold"),
+        legend.title.align = 0.5)
+
+# GHQ Stats
+mean(mindfulness_study$GHQ)
+sd(mindfulness_study$GHQ)
+quantile(mindfulness_study$GHQ)
+median(mindfulness_study$GHQ)
+```
+
